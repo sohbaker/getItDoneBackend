@@ -14,12 +14,12 @@ class SpringKotlinApplicationTests {
 	lateinit var testRestTemplate: TestRestTemplate
 
 	@Test
-	fun contextLoads() {
+	fun returnsAListOfTodosWhenTheTodosPathIsHit() {
 		val result = testRestTemplate
 				.getForEntity("/todos", String::class.java)
 
 		assertNotNull(result)
 		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertEquals("[\"drink water\",\"feed the cat\",\"buy food\"]", result?.body)
+		assertEquals("[{\"id\":1,\"name\":\"drink water\"},{\"id\":2,\"name\":\"feed the cat\"},{\"id\":3,\"name\":\"buy food\"}]", result?.body)
 	}
 }
