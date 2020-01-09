@@ -20,6 +20,6 @@ class SpringKotlinApplicationTests {
 
 		assertNotNull(result)
 		assertEquals(HttpStatus.OK, result?.statusCode)
-		assertEquals("[{\"id\":1,\"name\":\"drink water\"},{\"id\":2,\"name\":\"feed the cat\"},{\"id\":3,\"name\":\"buy food\"}]", result?.body)
+		assertEquals("[{\"id\":1,\"name\":\"drink water\",\"completed\":false},{\"id\":2,\"name\":\"feed the cat\",\"completed\":false},{\"id\":3,\"name\":\"buy food\",\"completed\":false}]", result?.body)
 	}
 }
