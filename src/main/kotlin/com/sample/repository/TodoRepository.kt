@@ -14,4 +14,17 @@ class TodoRepository {
     fun findAll(): MutableList<Todo> {
         return todos
     }
+
+    fun save(todo: Todo): Todo {
+        todo.id = todos.size + 1
+        todos.add(todo)
+        return todo
+    }
+
+    fun __deleteAll() {
+        print(todos)
+        todos.clear()
+        print("deleting.....")
+        print(todos)
+    }
 }
