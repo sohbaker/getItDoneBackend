@@ -22,9 +22,6 @@ class TodoRepository {
     }
 
     fun __deleteAll() {
-        print(todos)
         todos.clear()
-        print("deleting.....")
-        print(todos)
     }
 }
