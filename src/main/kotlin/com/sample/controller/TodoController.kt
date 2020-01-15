@@ -18,7 +18,7 @@ class TodoController {
     lateinit var repository: TodoRepository
 
     @GetMapping
-    fun findAll(): List<Todo> = repository.findAll()
+    fun findAll(): Iterable<Todo> = repository.findAll()
 
     @PostMapping
     fun add(@RequestBody todo: Todo): Todo = repository.save(todo)
