@@ -14,11 +14,11 @@ class TodoController {
     lateinit var repository: TodoRepository
 
     @GetMapping
-    fun findAll(): Iterable<Todo> = repository.findAll()
+    fun findAll(): List<TodoResponse> = repository.findAll().map{ todo -> responseMapper(todo) }
 
     @PostMapping
-    fun add(@RequestBody todo: Todo): Todo = repository.save(todo)
+    fun add(@RequestBody todo: Todo): TodoResponse = responseMapper(repository.save(todo))
 
     @GetMapping("/{id}")
-    fun findById(@PathVariable id: Int): Optional<Todo> = repository.findById(id)
+    fun findById(@PathVariable id: Int): Optional<TodoResponse> = repository.findById(id).map { todo -> responseMapper(todo) }
 }
