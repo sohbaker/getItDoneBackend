@@ -15,11 +15,11 @@ class TestHelper {
             completed = completed
     )
 
-    fun MOCK_TODO_ONE() : Todo {
+    fun TASK_ONE() : Todo {
         return todo(1, "a test task", false)
     }
 
-    fun MOCK_TODO_TWO() : Todo {
+    fun TASK_TWO() : Todo {
         return todo(2, "testing again", true)
     }
 }
