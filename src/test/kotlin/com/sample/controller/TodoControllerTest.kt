@@ -1,7 +1,6 @@
 package com.sample.controller
 
 import com.sample.TestHelper
-import com.sample.model.Todo
 import org.json.JSONObject
 
 import org.junit.jupiter.api.Assertions.*
@@ -28,10 +27,14 @@ internal class TodoControllerTest(
 ) {
     @Autowired
     lateinit var testHelper: TestHelper
+    lateinit var httpHeaders: HttpHeaders
 
     @BeforeEach
-    fun clearTaskList() {
+    fun setUp() {
         testRestTemplate.postForEntity<Void>("/reset", String::class.java)
+        httpHeaders = HttpHeaders()
+        httpHeaders.contentType = MediaType.APPLICATION_JSON
+        httpHeaders.accept = listOf(MediaType.APPLICATION_JSON)
     }
 
     @Test
@@ -44,47 +47,35 @@ internal class TodoControllerTest(
 
     @Test
     fun `user can create a new task`() {
-        val httpHeaders = HttpHeaders()
-        httpHeaders.contentType = MediaType.APPLICATION_JSON
-        httpHeaders.accept = listOf(MediaType.APPLICATION_JSON)
-
-        val requestBody = JSONObject().put("name", testHelper.MOCK_TODO_ONE().name)
-        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody.toString(), httpHeaders), Todo::class.java)
+        val requestBody = JSONObject().put("name", testHelper.TASK_ONE().name).toString()
+        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
 
         val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
-        assertTrue(result.body!!.contains(testHelper.MOCK_TODO_ONE().name))
+        assertTrue(result.body!!.contains(testHelper.TASK_ONE().name))
     }
 
     @Test
     fun `find tasks for a user if there are any`() {
-        val httpHeaders = HttpHeaders()
-        httpHeaders.contentType = MediaType.APPLICATION_JSON
-        httpHeaders.accept = listOf(MediaType.APPLICATION_JSON)
-
-        val requestBody = JSONObject().put("name", testHelper.MOCK_TODO_ONE().name)
-        testRestTemplate.postForEntity("/todos", HttpEntity(requestBody.toString(),httpHeaders), Todo::class.java)
+        val requestBody = JSONObject().put("name", testHelper.TASK_ONE().name).toString()
+        testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
 
         val result = testRestTemplate.getForEntity("/todos", String::class.java)
 
         assertEquals(HttpStatus.OK, result.statusCode)
-        assertTrue(result?.body!!.contains(testHelper.MOCK_TODO_ONE().name))
+        assertTrue(result?.body!!.contains(testHelper.TASK_ONE().name))
     }
 
     @Test
     fun `user can find a specific task`() {
-        val httpHeaders = HttpHeaders()
-        httpHeaders.contentType = MediaType.APPLICATION_JSON
-        httpHeaders.accept = listOf(MediaType.APPLICATION_JSON)
+        val requestBody = JSONObject().put("name", testHelper.TASK_ONE().name).toString()
+        testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
 
-        val requestBody = JSONObject().put("name", testHelper.MOCK_TODO_ONE().name)
-        testRestTemplate.postForEntity("/todos", HttpEntity(requestBody.toString(),httpHeaders), Todo::class.java)
-
-        val requestBodyTwo = JSONObject().put("name", testHelper.MOCK_TODO_TWO().name)
-        val todoTwo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBodyTwo.toString(),httpHeaders), Todo::class.java)
+        val requestBodyTwo = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
+        val todoTwo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBodyTwo, httpHeaders), TodoResponse::class.java)
 
         val result = testRestTemplate.getForEntity("/todos/${todoTwo.body!!.id}", String::class.java)
 
         assertEquals(HttpStatus.OK, result.statusCode)
-        assertTrue(result.body!!.contains(testHelper.MOCK_TODO_TWO().name))
+        assertTrue(result.body!!.contains(testHelper.TASK_TWO().name))
     }
 }
