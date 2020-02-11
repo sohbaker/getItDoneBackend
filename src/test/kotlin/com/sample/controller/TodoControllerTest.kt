@@ -1,6 +1,7 @@
 package com.sample.controller
 
 import com.sample.TestHelper
+import com.sample.model.TodoResponse
 import org.json.JSONObject
 
 import org.junit.jupiter.api.Assertions.*
@@ -67,13 +68,10 @@ internal class TodoControllerTest(
 
     @Test
     fun `user can find a specific task`() {
-        val requestBody = JSONObject().put("name", testHelper.TASK_ONE().name).toString()
-        testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
+        val requestBody = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
+        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
 
-        val requestBodyTwo = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
-        val todoTwo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBodyTwo, httpHeaders), TodoResponse::class.java)
-
-        val result = testRestTemplate.getForEntity("/todos/${todoTwo.body!!.id}", String::class.java)
+        val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
 
         assertEquals(HttpStatus.OK, result.statusCode)
         assertTrue(result.body!!.contains(testHelper.TASK_TWO().name))
