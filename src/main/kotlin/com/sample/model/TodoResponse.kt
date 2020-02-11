@@ -1,6 +1,4 @@
-package com.sample.controller
-
-import com.sample.model.Todo
+package com.sample.model
 
 data class TodoResponse (val id: Int, val name: String, val completed: Boolean)
 
