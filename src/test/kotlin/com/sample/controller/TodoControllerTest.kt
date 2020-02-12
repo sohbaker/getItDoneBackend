@@ -1,5 +1,6 @@
 package com.sample.controller
 
+import com.jayway.jsonpath.JsonPath
 import com.sample.TestHelper
 import com.sample.model.TodoResponse
 import org.json.JSONObject
@@ -75,5 +76,32 @@ internal class TodoControllerTest(
 
         assertEquals(HttpStatus.OK, result.statusCode)
         assertTrue(result.body!!.contains(testHelper.TASK_TWO().name))
+    }
+
+    @Test
+    fun `user can update the description of a task`() {
+        val requestBody = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
+        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
+
+        val string = "new details"
+        val updatedRequestBody = JSONObject().put("name", string).toString()
+        testRestTemplate.put("/todos/${todo.body!!.id}", HttpEntity(updatedRequestBody, httpHeaders))
+
+        val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
+
+        assertTrue(result.body!!.contains(string))
+    }
+
+    @Test
+    fun `user can mark a task as complete`() {
+        val requestBody = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
+        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
+
+        val updatedRequestBody = JSONObject().put("completed", true).toString()
+        testRestTemplate.put("/todos/${todo.body!!.id}/toggle_complete", HttpEntity(updatedRequestBody, httpHeaders))
+
+        val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
+
+        assertTrue(result.body!!.contains("true"))
     }
 }
