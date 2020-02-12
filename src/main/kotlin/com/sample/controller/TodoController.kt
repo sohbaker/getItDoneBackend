@@ -47,4 +47,7 @@ class TodoController {
             responseMapper(repository.save(toggledTodo))
         }
     }
+
+    @DeleteMapping("/{id}")
+    fun remove(@PathVariable id: Int) = repository.deleteById(id)
 }

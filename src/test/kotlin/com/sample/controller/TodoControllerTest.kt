@@ -104,4 +104,16 @@ internal class TodoControllerTest(
 
         assertTrue(result.body!!.contains("true"))
     }
+
+    @Test
+    fun `user can delete an existing task`() {
+        val requestBody = JSONObject().put("name", testHelper.TASK_TWO().name).toString()
+        val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
+
+        testRestTemplate.delete("/todos/${todo.body!!.id}")
+
+        val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
+
+        assertFalse(result.body!!.contains(testHelper.TASK_TWO().name))
+    }
 }
