@@ -1,6 +1,5 @@
 package com.sample.controller
 
-import com.jayway.jsonpath.JsonPath
 import com.sample.TestHelper
 import com.sample.model.TodoResponse
 import org.json.JSONObject
@@ -52,8 +51,7 @@ internal class TodoControllerTest(
         val requestBody = JSONObject().put("name", testHelper.TASK_ONE().name).toString()
         val todo = testRestTemplate.postForEntity("/todos", HttpEntity(requestBody, httpHeaders), TodoResponse::class.java)
 
-        val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
-        assertTrue(result.body!!.contains(testHelper.TASK_ONE().name))
+        assertEquals(HttpStatus.CREATED, todo.statusCode)
     }
 
     @Test

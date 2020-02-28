@@ -6,6 +6,7 @@ import com.sample.model.requestMapper
 import com.sample.model.responseMapper
 import com.sample.repository.TodoRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import javax.validation.Valid
@@ -23,6 +24,7 @@ class TodoController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     fun add(@RequestBody todoRequest: TodoRequest): TodoResponse {
         return responseMapper(repository.save(requestMapper(todoRequest)))
     }
