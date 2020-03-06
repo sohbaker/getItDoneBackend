@@ -114,4 +114,11 @@ internal class TodoControllerTest(
 
         assertFalse(result.body!!.contains(testHelper.TASK_TWO().name))
     }
+
+    @Test
+    fun `returns a not found response when a specific todo doesn't exist`() {
+        val result = testRestTemplate.getForEntity("/todos/1000", String::class.java)
+
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
+    }
 }

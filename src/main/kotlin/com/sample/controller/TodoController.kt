@@ -31,7 +31,12 @@ class TodoController {
 
     @GetMapping("/{id}")
     fun findById(@PathVariable id: Int): Optional<TodoResponse> {
-        return repository.findById(id).map { todo -> responseMapper(todo) }
+        val singleTodo = repository.findById(id)
+        if (singleTodo.isPresent) {
+            return singleTodo.map { todo -> responseMapper((todo))}
+        } else {
+            throw NotFoundException("")
+        }
     }
 
     @PutMapping("/{id}")
@@ -52,4 +57,9 @@ class TodoController {
 
     @DeleteMapping("/{id}")
     fun remove(@PathVariable id: Int) = repository.deleteById(id)
+
+    @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "todo does not exist")
+    class NotFoundException(message: String): RuntimeException(message)
 }
+
+
