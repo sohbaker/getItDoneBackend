@@ -56,7 +56,14 @@ class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    fun remove(@PathVariable id: Int) = repository.deleteById(id)
+    fun remove(@PathVariable id: Int) {
+        val singleTodo = repository.findById(id)
+        if (singleTodo.isPresent) {
+            return repository.deleteById(id)
+        } else {
+            throw NotFoundException("")
+        }
+    }
 
     @ResponseStatus(code = HttpStatus.NOT_FOUND, reason = "todo does not exist")
     class NotFoundException(message: String): RuntimeException(message)
