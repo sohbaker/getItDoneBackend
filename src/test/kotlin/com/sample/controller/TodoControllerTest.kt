@@ -112,7 +112,7 @@ internal class TodoControllerTest(
 
         val result = testRestTemplate.getForEntity("/todos/${todo.body!!.id}", String::class.java)
 
-        assertFalse(result.body!!.contains(testHelper.TASK_TWO().name))
+        assertEquals(HttpStatus.NOT_FOUND, result.statusCode)
     }
 
     @Test
